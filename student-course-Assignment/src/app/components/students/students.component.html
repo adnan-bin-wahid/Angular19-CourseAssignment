@@ -1,1 +1,28 @@
-<p>students works!</p>
+<section class="students-page">
+	<div class="actions">
+		<button (click)="create()">Create student</button>
+	</div>
+
+	<table class="students-table">
+		<thead>
+			<tr>
+				<th>SN</th>
+				<th>Student name</th>
+				<th>Student role</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let s of students$ | async; let i = index">
+				<td>{{ i + 1 }}</td>
+				<td>{{ s.name }}</td>
+				<td>{{ s.rollNumber }}</td>
+				<td>
+					<button (click)="edit(s)">Update</button>
+					<button (click)="delete(s.id)">Delete</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+
