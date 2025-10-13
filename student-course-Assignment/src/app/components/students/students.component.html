@@ -26,3 +26,23 @@
 	</table>
 </section>
 
+<!-- Edit modal -->
+<div class="modal-backdrop" *ngIf="editing">
+	<div class="modal" *ngIf="editModel">
+		<h3>Edit student</h3>
+		<label>
+			Name
+			<input [(ngModel)]="editModel.name" />
+		</label>
+		<label>
+			Roll
+			<input [(ngModel)]="editModel.rollNumber" />
+		</label>
+		<div class="modal-actions">
+			<button (click)="saveEdit()">Update</button>
+			<button (click)="closeModal()">Cancel</button>
+		</div>
+	</div>
+</div>
+
+
