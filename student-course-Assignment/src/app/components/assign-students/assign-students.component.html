@@ -1,1 +1,43 @@
-<p>assign-students works!</p>
+<section class="assign-page">
+	<div class="controls">
+			<label>
+				Select student
+				<select [(ngModel)]="selectedStudentId" (ngModelChange)="onStudentChange($event)">
+					<option [ngValue]="null">-- choose student --</option>
+					<option *ngFor="let s of students$ | async" [ngValue]="s.id">{{ s.name }} ({{ s.rollNumber }})</option>
+				</select>
+			</label>
+
+		<div class="course-list">
+			<h4>Courses</h4>
+					<div *ngFor="let c of courses">
+						<label>
+							  <input type="checkbox" [checked]="checkedCourseIds.has(c.id)" (change)="toggleCourse(c.id, $any($event.target).checked)" />
+							{{ c.name }} ({{ c.courseCode }})
+						</label>
+					</div>
+			<div class="assign-actions">
+				<button (click)="assign()">Assign</button>
+			</div>
+		</div>
+	</div>
+
+	<section class="assigned-list">
+		<h3>Assigned students</h3>
+		<table>
+			<thead>
+				<tr><th>Student</th><th>Courses</th><th>Actions</th></tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let a of assigned$ | async">
+					<td>{{ a.name }} ({{ a.rollNumber }})</td>
+					  <td>{{ getCourseNames(a) }}</td>
+					<td>
+						<button (click)="loadForEdit(a)">Update</button>
+						<button (click)="unassign(a.id)">Remove</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+</section>

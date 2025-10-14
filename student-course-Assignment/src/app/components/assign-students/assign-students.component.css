@@ -1,0 +1,9 @@
+
+.assign-page{max-width:1000px;margin:20px auto;padding:12px}
+.controls{display:flex;gap:20px;align-items:flex-start}
+.course-list{min-width:320px;padding:10px;border:1px solid #eee;border-radius:8px;background:#fff}
+.assign-actions{margin-top:12px}
+.assigned-list{margin-top:20px}
+.assigned-list table{width:100%;border-collapse:collapse}
+.assigned-list th,.assigned-list td{padding:10px;border:1px solid #e6e6e6}
+
