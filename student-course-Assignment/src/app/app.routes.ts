@@ -5,6 +5,7 @@ import { StudentsComponent } from './components/students/students.component';
 import { CoursesComponent } from './components/courses/courses.component';
 import { AssignStudentsComponent } from './components/assign-students/assign-students.component';
 import { CreateStudentComponent } from './components/students/create-student.component';
+import { CreateCourseComponent } from './components/courses/create-course/create-course.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'students', pathMatch: 'full' },
@@ -12,5 +13,6 @@ export const routes: Routes = [
   { path: 'create-student', component: CreateStudentComponent },
   { path: 'courses', component: CoursesComponent },
   { path: 'assigned', component: AssignStudentsComponent },
-  { path: '**', redirectTo: 'students' }
+  { path: 'create-course', component: CreateCourseComponent},
+  { path: '**', redirectTo: 'students' },
 ];

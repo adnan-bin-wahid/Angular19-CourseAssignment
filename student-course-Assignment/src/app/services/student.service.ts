@@ -5,7 +5,7 @@ import { Student, STUDENTS } from '../models/student';
 @Injectable({ providedIn: 'root' })
 export class StudentService {
   private studentsSource = new BehaviorSubject<Student[]>([...STUDENTS]);
-  students$ = this.studentsSource.asObservable();
+  students = this.studentsSource.asObservable();
 
   getCurrent() {
     return this.studentsSource.getValue();

@@ -15,12 +15,11 @@ import { Student } from '../../models/student';
 })
 export class StudentsComponent {
   students$: Observable<Student[]>;
-  // modal state
   editing: boolean = false;
   editModel: { id: number; name: string; rollNumber: string } | null = null;
 
   constructor(private students: StudentService, private router: Router) {
-    this.students$ = this.students.students$;
+    this.students$ = this.students.students;
   }
 
   create() {
