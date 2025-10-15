@@ -8,36 +8,21 @@
 				</select>
 			</label>
 
-		<div class="course-list">
-			<h4>Courses</h4>
-					<div *ngFor="let c of courses">
-						<label>
-							  <input type="checkbox" [checked]="checkedCourseIds.has(c.id)" (change)="toggleCourse(c.id, $any($event.target).checked)" />
-							{{ c.name }} ({{ c.courseCode }})
-						</label>
-					</div>
-			<div class="assign-actions">
-				<button (click)="assign()">Assign</button>
-			</div>
-		</div>
+		<app-course-selector
+			[courses]="courses"
+			[selectedCourseIds]="checkedCourseIds"
+			(toggleCourse)="onCourseToggle($event)"
+			(assign)="assign()"
+		></app-course-selector>
 	</div>
 
-	<section class="assigned-list">
-		<h3>Assigned students</h3>
-		<table>
-			<thead>
-				<tr><th>Student</th><th>Courses</th><th>Actions</th></tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let a of assigned$ | async">
-					<td>{{ a.name }} ({{ a.rollNumber }})</td>
-					  <td>{{ getCourseNames(a) }}</td>
-					<td>
-						<button (click)="loadForEdit(a)">Update</button>
-						<button (click)="unassign(a.id)">Remove</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</section>
+		<section class="assigned-list">
+			<h3>Assigned students</h3>
+			<app-list [headers]="['Student','Courses']" [fields]="['name','coursesDisplay']" [rows]="(assignedRows$ | async) || []">
+				<ng-template #actions let-row let-i="index">
+					<button (click)="loadForEdit(row)">Update</button>
+					<button (click)="unassign(row.id)">Remove</button>
+				</ng-template>
+			</app-list>
+		</section>
 </section>

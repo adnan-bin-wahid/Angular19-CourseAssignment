@@ -6,12 +6,15 @@ import { StudentService } from '../../services/student.service';
 import { AssignmentService, AssignedStudent } from '../../services/assignment.service';
 import { Course } from '../../models/course';
 import { CourseService } from '../../services/course.service';
+import { ListComponent } from '../list/list.component';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CourseSelectorComponent } from '../course-selector/course-selector.component';
 
 @Component({
   selector: 'app-assign-students',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ListComponent, CourseSelectorComponent],
   templateUrl: './assign-students.component.html',
   styleUrls: ['./assign-students.component.css']
 })
@@ -19,6 +22,7 @@ export class AssignStudentsComponent {
   students$: Observable<any>;
   courses: Course[] = [];
   assigned$: Observable<any>;
+  assignedRows$: Observable<any[]>;
 
   // selection model
   selectedStudentId: number | null = null;
@@ -29,6 +33,11 @@ export class AssignStudentsComponent {
     this.assigned$ = this.assignments.assigned$;
     // keep course list in sync with CourseService
     this.courseService.courses.subscribe(list => this.courses = list);
+    this.assignedRows$ = this.assigned$.pipe(
+      // map each assigned to include a display field for courses
+      // simple sync mapping
+      map((list: AssignedStudent[]) => list.map(a => ({ ...a, coursesDisplay: a.courses.map(c => c.name).join(', ') })))
+    );
   }
 
   onStudentChange(id: number | null) {
@@ -39,9 +48,14 @@ export class AssignStudentsComponent {
     if (assigned) assigned.courses.forEach(c => this.checkedCourseIds.add(c.id));
   }
 
-  toggleCourse(courseId: number, checked: boolean) {
-    if (checked) this.checkedCourseIds.add(courseId);
-    else this.checkedCourseIds.delete(courseId);
+  onCourseToggle(event: { courseId: number, checked: boolean }) {
+    if (event.checked) this.checkedCourseIds.add(event.courseId);
+    else this.checkedCourseIds.delete(event.courseId);
+  }
+
+  clearSelections() {
+    this.selectedStudentId = null;
+    this.checkedCourseIds = new Set<number>();  // Create a new Set to force change detection
   }
 
   assign() {
@@ -51,14 +65,26 @@ export class AssignStudentsComponent {
     const selectedCourses = this.courses.filter(c => this.checkedCourseIds.has(c.id));
     const payload: AssignedStudent = { id: student.id, name: student.name, rollNumber: student.rollNumber, courses: selectedCourses };
     this.assignments.assign(payload);
+    
+    // Clear all selections after successful assignment
+    this.clearSelections();
   }
 
   loadForEdit(a: AssignedStudent) {
-    this.selectedStudentId = a.id;
-    this.checkedCourseIds.clear();
-    a.courses.forEach(c => this.checkedCourseIds.add(c.id));
-    // update select and load checked courses
-    this.onStudentChange(this.selectedStudentId);
+    // First clear any existing selections
+    this.clearSelections();
+    
+    // Then set the new selections
+    setTimeout(() => {
+      // Set the student ID
+      this.selectedStudentId = a.id;
+      
+      // Set the selected courses
+      this.checkedCourseIds = new Set(a.courses.map(c => c.id));
+      
+      // Force Angular change detection
+      this.onStudentChange(a.id);
+    });
   }
 
   unassign(id: number) {

@@ -5,10 +5,13 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { CourseService } from '../../services/course.service';
 import { Course } from '../../models/course';
+import { ListComponent } from '../list/list.component';
+import { ModalComponent } from '../modal/modal.component';
+import { SimpleFormComponent, SimpleFormModel } from '../simple-form/simple-form.component';
 
 @Component({
   selector: 'app-courses',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ListComponent, ModalComponent, SimpleFormComponent],
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.css']
 })
@@ -48,6 +51,13 @@ export class CoursesComponent {
     if(!name.trim() || !courseCode.trim()) return;
     this.courses.update(id, { name: name.trim(), courseCode: courseCode.trim() });
     this.closeModal();    
+  }
+
+  onFormSave(m: SimpleFormModel) {
+    if (!this.editModel) return;
+    this.editModel.name = m.name;
+    this.editModel.courseCode = m.extra;
+    this.saveEdit();
   }
 
 }

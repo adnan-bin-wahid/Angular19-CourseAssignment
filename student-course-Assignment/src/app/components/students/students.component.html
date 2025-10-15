@@ -3,46 +3,17 @@
 		<button (click)="create()">Create student</button>
 	</div>
 
-	<table class="students-table">
-		<thead>
-			<tr>
-				<th>SN</th>
-				<th>Student name</th>
-				<th>Student role</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let s of students$ | async; let i = index">
-				<td>{{ i + 1 }}</td>
-				<td>{{ s.name }}</td>
-				<td>{{ s.rollNumber }}</td>
-				<td>
-					<button (click)="edit(s)">Update</button>
-					<button (click)="delete(s.id)">Delete</button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+  <app-list [headers]="['SN','Student name','Student role']" [fields]="['$index','name','rollNumber']" [rows]="(students$ | async) || []">
+    <ng-template #actions let-row let-i="index">
+      <button (click)="edit(row)">Update</button>
+      <button (click)="delete(row.id)">Delete</button>
+    </ng-template>
+  </app-list>
 </section>
 
-<!-- Edit modal -->
-<div class="modal-backdrop" *ngIf="editing">
-	<div class="modal" *ngIf="editModel">
-		<h3>Edit student</h3>
-		<label>
-			Name
-			<input [(ngModel)]="editModel.name" />
-		</label>
-		<label>
-			Roll
-			<input [(ngModel)]="editModel.rollNumber" />
-		</label>
-		<div class="modal-actions">
-			<button (click)="saveEdit()">Update</button>
-			<button (click)="closeModal()">Cancel</button>
-		</div>
-	</div>
-</div>
+<app-modal [visible]="editing" title="Edit student" (close)="closeModal()">
+  <app-simple-form [model]="{ name: editModel?.name || '', extra: editModel?.rollNumber || '' }" extraLabel="Roll" submitLabel="Update"
+    (save)="onFormSave($event)" (cancel)="closeModal()"></app-simple-form>
+</app-modal>
 
 
