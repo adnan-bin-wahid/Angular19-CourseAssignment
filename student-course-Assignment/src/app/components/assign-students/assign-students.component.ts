@@ -73,11 +73,15 @@ export class AssignStudentsComponent {
   }
 
   clearSelections() {
+    // Clear student selection
     this.selectedStudentId = null;
-    // Create a completely new Set to force change detection
+    
+    // Create new empty Set to force change detection
     this.checkedCourseIds = new Set<number>();
-    // Force change detection by modifying the reference
+    
+    // Ensure UI updates
     setTimeout(() => {
+      // Create another new Set to force change detection
       this.checkedCourseIds = new Set<number>();
     });
   }
@@ -86,12 +90,26 @@ export class AssignStudentsComponent {
     if (!this.selectedStudentId) return alert('Select a student first');
     const student = this.students.getCurrent().find(s => s.id === this.selectedStudentId);
     if (!student) return alert('Student not found');
+    
     const selectedCourses = this.courses.filter(c => this.checkedCourseIds.has(c.id));
-    const payload: AssignedStudent = { id: student.id, name: student.name, rollNumber: student.rollNumber, courses: selectedCourses };
+    const payload: AssignedStudent = { 
+      id: student.id, 
+      name: student.name, 
+      rollNumber: student.rollNumber, 
+      courses: selectedCourses 
+    };
+    
+    // First assign the courses
     this.assignments.assign(payload);
     
-    // Clear all selections after successful assignment
+    // Then clear all selections using the enhanced clearSelections method
     this.clearSelections();
+    
+    // Force an additional update cycle for the course selections
+    setTimeout(() => {
+      this.checkedCourseIds = new Set<number>();
+      this.onStudentChange(null);
+    }, 0);
   }
 
   loadForEdit(a: AssignedStudent) {
