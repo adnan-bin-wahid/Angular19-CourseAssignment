@@ -35,8 +35,8 @@ import { Course } from '../../models/course';
 })
 export class CourseSelectorComponent implements OnChanges {
   @Input() courses: Course[] = [];
-  @Input() set selectedCourseIds(value: Set<number>) {
-    this._selectedCourseIds = new Set(value);
+  @Input() set selectedCourseIds(value: Set<number> | null) {
+    this._selectedCourseIds = new Set(value || []);
   }
   get selectedCourseIds(): Set<number> {
     return this._selectedCourseIds;
@@ -47,8 +47,8 @@ export class CourseSelectorComponent implements OnChanges {
   @Output() assign = new EventEmitter<void>();
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['selectedCourseIds'] && changes['selectedCourseIds'].currentValue) {
-      this._selectedCourseIds = new Set(changes['selectedCourseIds'].currentValue);
+    if ('selectedCourseIds' in changes) {
+      this._selectedCourseIds = new Set(changes['selectedCourseIds'].currentValue || []);
     }
   }
 

@@ -42,10 +42,29 @@ export class AssignStudentsComponent {
 
   onStudentChange(id: number | null) {
     this.selectedStudentId = id || null;
-    // load assigned courses if exist
-    const assigned = this.assignments.getCurrent().find(a => a.id === this.selectedStudentId);
-    this.checkedCourseIds.clear();
-    if (assigned) assigned.courses.forEach(c => this.checkedCourseIds.add(c.id));
+    
+    // Create a new Set to force change detection
+    this.checkedCourseIds = new Set<number>();
+
+    if (!this.selectedStudentId) {
+      return; // If no student selected, leave courses unchecked
+    }
+
+    // Check if student exists in assigned students
+    const assignedStudent = this.assignments.getCurrent().find(a => a.id === this.selectedStudentId);
+    
+    if (assignedStudent) {
+      // If student exists in assignments, show their assigned courses
+      this.checkedCourseIds = new Set(assignedStudent.courses.map(c => c.id));
+    } else {
+      // If student doesn't exist in assignments, all courses should be unchecked
+      this.checkedCourseIds = new Set<number>();
+    }
+
+    // Force change detection
+    setTimeout(() => {
+      this.checkedCourseIds = new Set(this.checkedCourseIds);
+    });
   }
 
   onCourseToggle(event: { courseId: number, checked: boolean }) {
@@ -55,7 +74,12 @@ export class AssignStudentsComponent {
 
   clearSelections() {
     this.selectedStudentId = null;
-    this.checkedCourseIds = new Set<number>();  // Create a new Set to force change detection
+    // Create a completely new Set to force change detection
+    this.checkedCourseIds = new Set<number>();
+    // Force change detection by modifying the reference
+    setTimeout(() => {
+      this.checkedCourseIds = new Set<number>();
+    });
   }
 
   assign() {
