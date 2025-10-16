@@ -24,18 +24,14 @@ export class AssignStudentsComponent {
   assigned$: Observable<any>;
   assignedRows$: Observable<any[]>;
 
-  // selection model
   selectedStudentId: number | null = null;
   checkedCourseIds = new Set<number>();
 
   constructor(private students: StudentService, private assignments: AssignmentService, private courseService: CourseService) {
     this.students$ = this.students.students;
     this.assigned$ = this.assignments.assigned$;
-    // keep course list in sync with CourseService
     this.courseService.courses.subscribe(list => this.courses = list);
     this.assignedRows$ = this.assigned$.pipe(
-      // map each assigned to include a display field for courses
-      // simple sync mapping
       map((list: AssignedStudent[]) => list.map(a => ({ ...a, coursesDisplay: a.courses.map(c => c.name).join(', ') })))
     );
   }
@@ -43,25 +39,21 @@ export class AssignStudentsComponent {
   onStudentChange(id: number | null) {
     this.selectedStudentId = id || null;
     
-    // Create a new Set to force change detection
     this.checkedCourseIds = new Set<number>();
 
     if (!this.selectedStudentId) {
-      return; // If no student selected, leave courses unchecked
+      return;
     }
 
-    // Check if student exists in assigned students
     const assignedStudent = this.assignments.getCurrent().find(a => a.id === this.selectedStudentId);
     
     if (assignedStudent) {
-      // If student exists in assignments, show their assigned courses
       this.checkedCourseIds = new Set(assignedStudent.courses.map(c => c.id));
     } else {
-      // If student doesn't exist in assignments, all courses should be unchecked
+      
       this.checkedCourseIds = new Set<number>();
     }
 
-    // Force change detection
     setTimeout(() => {
       this.checkedCourseIds = new Set(this.checkedCourseIds);
     });
@@ -73,15 +65,11 @@ export class AssignStudentsComponent {
   }
 
   clearSelections() {
-    // Clear student selection
     this.selectedStudentId = null;
     
-    // Create new empty Set to force change detection
     this.checkedCourseIds = new Set<number>();
     
-    // Ensure UI updates
     setTimeout(() => {
-      // Create another new Set to force change detection
       this.checkedCourseIds = new Set<number>();
     });
   }
@@ -99,13 +87,11 @@ export class AssignStudentsComponent {
       courses: selectedCourses 
     };
     
-    // First assign the courses
     this.assignments.assign(payload);
     
-    // Then clear all selections using the enhanced clearSelections method
     this.clearSelections();
     
-    // Force an additional update cycle for the course selections
+
     setTimeout(() => {
       this.checkedCourseIds = new Set<number>();
       this.onStudentChange(null);
@@ -113,18 +99,14 @@ export class AssignStudentsComponent {
   }
 
   loadForEdit(a: AssignedStudent) {
-    // First clear any existing selections
     this.clearSelections();
-    
-    // Then set the new selections
+
     setTimeout(() => {
-      // Set the student ID
+
       this.selectedStudentId = a.id;
       
-      // Set the selected courses
       this.checkedCourseIds = new Set(a.courses.map(c => c.id));
       
-      // Force Angular change detection
       this.onStudentChange(a.id);
     });
   }

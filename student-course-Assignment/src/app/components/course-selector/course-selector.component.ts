@@ -41,7 +41,6 @@ export class CourseSelectorComponent implements OnChanges {
     this.selectedIds = new Set(value || []);
   }
   
-  // Make this public for template access
   selectedIds = new Set<number>();
   
   @Output() toggleCourse = new EventEmitter<{courseId: number, checked: boolean}>();
@@ -49,10 +48,8 @@ export class CourseSelectorComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if ('selectedCourseIds' in changes) {
-      // Create new Set to force change detection
       this.selectedIds = new Set(changes['selectedCourseIds'].currentValue || []);
       
-      // Force UI update
       setTimeout(() => {
         this.selectedIds = new Set(this.selectedIds);
         this.resetCheckboxes();

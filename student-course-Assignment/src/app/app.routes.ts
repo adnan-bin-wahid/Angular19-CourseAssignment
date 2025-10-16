@@ -32,5 +32,10 @@ export const routes: Routes = [
       return import('./components/courses/create-course/create-course.component').then((m)=>m.CreateCourseComponent);
     },
   },
+  { path: 'posts',
+    loadComponent() {
+      return import('./components/posts/posts.component').then((m)=>m.PostsComponent);
+    },
+  },
   { path: '**', redirectTo: 'students' },
 ];
