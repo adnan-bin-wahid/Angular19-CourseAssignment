@@ -39,7 +39,7 @@ header {
     letter-spacing: 0.6px;
 }
 
-.nav a{
+.nav a, .auth-actions a, .auth-actions button {
     color: var(--text);
     text-decoration: none;
     margin-left: 18px;
@@ -47,6 +47,18 @@ header {
     border-radius: 6px;
     transition: background-color 150ms ease, color 150ms ease, transform 120ms ease;
     display: inline-block;
+}
+
+.logout-btn, .login-btn {
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-btn:hover, .login-btn:hover {
+    background: #0891b2;
+    transform: translateY(-1px);
 }
 
 .nav a:hover{background: rgba(255,255,255,0.04); transform: translateY(-1px)}
