@@ -71,7 +71,7 @@ export class PostsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.postService.loadPosts(10);  // Load top 10 posts
+    this.postService.loadPosts(10);  
   }
 
   selectPost(post: Post) {
